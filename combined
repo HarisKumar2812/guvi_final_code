@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Authentication</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        h2 {
+            color: #7FFF00; /* Parrot Green */
+        }
+        button, input[type="submit"], a {
+            background-color: #7FFF00; /* Parrot Green */
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        button:hover, input[type="submit"]:hover, a:hover {
+            background-color: #5fbf00; /* Slightly darker green for hover effect */
+        }
+        form {
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        function storeLoginDetails() {
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+            const dob = document.getElementById('dob').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+
+            document.getElementById('profile_name').textContent = name;
+            document.getElementById('profile_age').textContent = age;
+            document.getElementById('profile_dob').textContent = dob;
+            document.getElementById('profile_phone').textContent = phone;
+            document.getElementById('profile_address').textContent = address;
+
+            showSection('profile');
+        }
+
+        window.onload = function() {
+            showSection('signup');
+        }
+    </script>
+</head>
+<body>
+    <!-- Sign Up Page -->
+    <div id="signup" class="section active">
+        <button onclick="showSection('login')">Back</button>
+        <h2>Sign Up</h2>
+        <form action="/signup" method="POST">
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username" required><br><br>
+
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required><br><br>
+
+            <input type="submit" value="Sign Up">
+        </form>
+        <br>
+        <button onclick="showSection('forgot_password')">Forgot Password?</button>
+        <br><br>
+        <p>Already have an account? <a href="#" onclick="showSection('login')">Log In</a></p>
+    </div>
+
+    <!-- Forgot Password Page -->
+    <div id="forgot_password" class="section">
+        <button onclick="showSection('signup')">Back</button>
+        <h2>Reset Password</h2>
+        <form action="/reset_password" method="POST">
+            <label for="new_password">New Password:</label><br>
+            <input type="password" id="new_password" name="new_password" required><br><br>
+
+            <label for="confirm_password">Confirm New Password:</label><br>
+            <input type="password" id="confirm_password" name="confirm_password" required><br><br>
+
+            <input type="submit" value="Reset Password">
+        </form>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login" class="section">
+        <button onclick="showSection('signup')">Back</button>
+        <h2>Log In</h2>
+        <form onsubmit="storeLoginDetails(); return false;">
+            <label for="name">Name:</label><br>
+            <input type="text" id="name" name="name" required><br><br>
+
+            <label for="age">Age:</label><br>
+            <input type="number" id="age" name="age" required><br><br>
+
+            <label for="dob">Date of Birth:</label><br>
+            <input type="date" id="dob" name="dob" required><br><br>
+
+            <label for="phone">Phone Number:</label><br>
+            <input type="tel" id="phone" name="phone" required><br><br>
+
+            <label for="address">Address:</label><br>
+            <input type="text" id="address" name="address" required><br><br>
+
+            <input type="submit" value="Log In">
+        </form>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profile" class="section">
+        <button onclick="showSection('login')">Back</button>
+        <h2>Profile Details</h2>
+        <p><strong>Name:</strong> <span id="profile_name"></span></p>
+        <p><strong>Age:</strong> <span id="profile_age"></span></p>
+        <p><strong>Date of Birth:</strong> <span id="profile_dob"></span></p>
+        <p><strong>Phone Number:</strong> <span id="profile_phone"></span></p>
+        <p><strong>Address:</strong> <span id="profile_address"></span></p>
+    </div>
+</body>
+</html>

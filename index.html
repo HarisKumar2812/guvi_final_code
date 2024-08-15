@@ -62,6 +62,20 @@
             showSection('profile');
         }
 
+        function storeSignUpDetails(event) {
+            event.preventDefault(); // Prevent the form from submitting
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Here, you would typically send the sign-up data to the server using fetch or AJAX.
+
+            // For now, we just simulate successful sign-up and go to profile details.
+            document.getElementById('profile_name').textContent = username;
+            // Assuming other details like age, dob, phone, and address are collected elsewhere or defaulted.
+
+            showSection('profile');
+        }
+
         window.onload = function() {
             showSection('signup');
         }
@@ -72,7 +86,7 @@
     <div id="signup" class="section active">
         <button onclick="showSection('login')">Back</button>
         <h2>Sign Up</h2>
-        <form action="/signup" method="POST">
+        <form onsubmit="storeSignUpDetails(event);">
             <label for="username">Username:</label><br>
             <input type="text" id="username" name="username" required><br><br>
 

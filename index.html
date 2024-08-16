@@ -52,6 +52,8 @@
         }
     </style>
     <script>
+        let storedUserData = {};
+
         function showSection(sectionId) {
             document.querySelectorAll('.section').forEach(section => {
                 section.classList.remove('active');
@@ -61,22 +63,47 @@
 
         function storeRegistrationDetails() {
             const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
             const name = document.getElementById('name').value;
             const age = document.getElementById('age').value;
             const dob = document.getElementById('dob').value;
             const phone = document.getElementById('phone').value;
             const address = document.getElementById('address').value;
 
-            // Store the registration details in profile page
-            document.getElementById('profile_username').textContent = username;
-            document.getElementById('profile_name').textContent = name;
-            document.getElementById('profile_age').textContent = age;
-            document.getElementById('profile_dob').textContent = dob;
-            document.getElementById('profile_phone').textContent = phone;
-            document.getElementById('profile_address').textContent = address;
+            // Store the registration details in memory
+            storedUserData = {
+                username,
+                password,
+                name,
+                age,
+                dob,
+                phone,
+                address
+            };
 
-            // Show the profile section
-            showSection('profile');
+            alert('Registration successful! Please log in.');
+            showSection('login');
+        }
+
+        function storeLoginDetails() {
+            const username = document.getElementById('username_login').value;
+            const password = document.getElementById('password_login').value;
+
+            // Check if the entered username and password match the stored data
+            if (username === storedUserData.username && password === storedUserData.password) {
+                // Populate the profile page with stored details
+                document.getElementById('profile_username').textContent = storedUserData.username;
+                document.getElementById('profile_name').textContent = storedUserData.name;
+                document.getElementById('profile_age').textContent = storedUserData.age;
+                document.getElementById('profile_dob').textContent = storedUserData.dob;
+                document.getElementById('profile_phone').textContent = storedUserData.phone;
+                document.getElementById('profile_address').textContent = storedUserData.address;
+
+                // Show the profile section
+                showSection('profile');
+            } else {
+                alert('Invalid username or password. Please try again.');
+            }
         }
 
         window.onload = function() {

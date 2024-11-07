@@ -62,11 +62,6 @@
         .error-message {
             color: red;
         }
-        #profile_photo {
-            max-width: 150px;
-            border-radius: 5px;
-            margin-top: 20px;
-        }
     </style>
     <script>
         function showSection(sectionId) {
@@ -84,62 +79,50 @@
             const dob = document.getElementById('dob').value;
             const phone = document.getElementById('phone').value;
             const address = document.getElementById('address').value;
-            const photoFile = document.getElementById('photo').files[0];
 
+            // Check if the username already exists
             if (localStorage.getItem(username)) {
                 document.getElementById('error-message').textContent = 'Username already exists. Please choose another username.';
                 return;
             } else {
-                document.getElementById('error-message').textContent = '';
+                document.getElementById('error-message').textContent = ''; // Clear any previous error messages
             }
 
-            if (photoFile && photoFile.size > 1024 * 1024) {
-                document.getElementById('error-message').textContent = 'Photo size should be 1 MB or less.';
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onloadend = function () {
-                const userData = {
-                    username,
-                    password,
-                    name,
-                    age,
-                    dob,
-                    phone,
-                    address,
-                    photo: reader.result || ''
-                };
-                localStorage.setItem(username, JSON.stringify(userData));
-
-                document.getElementById('username').value = '';
-                document.getElementById('password').value = '';
-                document.getElementById('name').value = '';
-                document.getElementById('age').value = '';
-                document.getElementById('dob').value = '';
-                document.getElementById('phone').value = '';
-                document.getElementById('address').value = '';
-                document.getElementById('photo').value = '';
-
-                alert('Registration successful! Please log in.');
-                showSection('login');
+            // Store the registration details in localStorage
+            const userData = {
+                username,
+                password,
+                name,
+                age,
+                dob,
+                phone,
+                address
             };
+            localStorage.setItem(username, JSON.stringify(userData));
 
-            if (photoFile) {
-                reader.readAsDataURL(photoFile);
-            } else {
-                reader.onloadend();
-            }
+            // Clear the registration form
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('age').value = '';
+            document.getElementById('dob').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('address').value = '';
+
+            alert('Registration successful! Please log in.');
+            showSection('login');
         }
 
         function storeLoginDetails() {
             const username = document.getElementById('username_login').value;
             const password = document.getElementById('password_login').value;
 
+            // Retrieve the stored data from localStorage
             const storedData = localStorage.getItem(username);
             if (storedData) {
                 const userData = JSON.parse(storedData);
                 if (password === userData.password) {
+                    // Populate the profile page with stored details
                     document.getElementById('profile_username').textContent = userData.username;
                     document.getElementById('profile_name').textContent = userData.name;
                     document.getElementById('profile_age').textContent = userData.age;
@@ -147,16 +130,11 @@
                     document.getElementById('profile_phone').textContent = userData.phone;
                     document.getElementById('profile_address').textContent = userData.address;
 
-                    if (userData.photo) {
-                        document.getElementById('profile_photo').src = userData.photo;
-                        document.getElementById('profile_photo').style.display = 'block';
-                    } else {
-                        document.getElementById('profile_photo').style.display = 'none';
-                    }
-
+                    // Clear the login form fields
                     document.getElementById('username_login').value = '';
                     document.getElementById('password_login').value = '';
 
+                    // Show the profile section
                     showSection('profile');
                 } else {
                     alert('Invalid username or password. Please try again.');
@@ -171,10 +149,10 @@
             const toggleIcon = document.getElementById(toggleId);
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
-                toggleIcon.textContent = '👁️‍🗨️';
+                toggleIcon.textContent = '👁️‍🗨️';  // Crossed-eye emoji for "hide"
             } else {
                 passwordInput.type = 'password';
-                toggleIcon.textContent = '👁️';
+                toggleIcon.textContent = '👁️';  // Eye emoji for "show"
             }
         }
 
@@ -184,13 +162,13 @@
         }
 
         window.onload = function() {
-            showSection('login');
+            showSection('register');
         }
     </script>
 </head>
 <body>
     <!-- Register Page -->
-    <div id="register" class="section">
+    <div id="register" class="section active">
         <button class="back-button" onclick="showSection('login')">Back</button>
         <h2>Register</h2>
         <form onsubmit="storeRegistrationDetails(); return false;">
@@ -217,17 +195,37 @@
             <label for="address">Address:</label><br>
             <input type="text" id="address" name="address" required><br><br>
 
-            <label for="photo">Upload Photo (Max 1 MB):</label><br>
-            <input type="file" id="photo" name="photo" accept="image/*"><br><br>
-
             <input type="submit" value="Register">
         </form>
+        <br>
         <span id="error-message" class="error-message"></span>
+        <br>
+        <button onclick="showSection('forgot_password')">Forgot Password?</button>
+        <br><br>
         <p>Already have an account? <a href="#" onclick="showSection('login')">Log In</a></p>
     </div>
 
+    <!-- Forgot Password Page -->
+    <div id="forgot_password" class="section">
+        <button class="back-button" onclick="showSection('register')">Back</button>
+        <h2>Reset Password</h2>
+        <form action="/reset_password" method="POST">
+            <label for="new_password">New Password:</label><br>
+            <input type="password" id="new_password" name="new_password" required>
+            <span id="toggle-password-reset" class="toggle-password" onclick="togglePasswordVisibility('new_password', 'toggle-password-reset')">👁️</span>
+            <br><br>
+
+            <label for="confirm_password">Confirm New Password:</label><br>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+            <span id="toggle-password-confirm" class="toggle-password" onclick="togglePasswordVisibility('confirm_password', 'toggle-password-confirm')">👁️</span>
+            <br><br>
+
+            <input type="submit" value="Reset Password">
+        </form>
+    </div>
+
     <!-- Login Page -->
-    <div id="login" class="section active">
+    <div id="login" class="section">
         <button class="back-button" onclick="showSection('register')">Back</button>
         <h2>Log In</h2>
         <form onsubmit="storeLoginDetails(); return false;">
@@ -239,9 +237,7 @@
             <span id="toggle-password-login" class="toggle-password" onclick="togglePasswordVisibility('password_login', 'toggle-password-login')">👁️</span>
             <br><br>
 
-            <
-
-input type="submit" value="Log In">
+            <input type="submit" value="Log In">
         </form>
     </div>
 
@@ -255,7 +251,6 @@ input type="submit" value="Log In">
         <p><strong>Date of Birth:</strong> <span id="profile_dob"></span></p>
         <p><strong>Phone Number:</strong> <span id="profile_phone"></span></p>
         <p><strong>Address:</strong> <span id="profile_address"></span></p>
-        <img id="profile_photo" src="" alt="Profile Photo" style="display:none;">
         <button class="logout-button" onclick="logout()">Logout</button>
     </div>
 </body>

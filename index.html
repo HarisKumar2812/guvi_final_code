@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Authentication</title>
     <style>
-        /* Styling for the page */
         body {
             background-color: black;
             color: white;
@@ -31,10 +30,10 @@
             left: 10px;
         }
         .section h2 {
-            color: #7FFF00;
+            color: #7FFF00; /* Parrot Green */
         }
         button, input[type="submit"], a {
-            background-color: #7FFF00;
+            background-color: #7FFF00; /* Parrot Green */
             color: black;
             border: none;
             padding: 10px 20px;
@@ -44,6 +43,9 @@
             border-radius: 5px;
             display: inline-block;
             margin-top: 10px;
+        }
+        button:hover, input[type="submit"]:hover, a:hover {
+            background-color: #5fbf00; /* Slightly darker green for hover effect */
         }
         form {
             margin-top: 20px;
@@ -60,7 +62,6 @@
         .error-message {
             color: red;
         }
-        /* Style for uploaded photo */
         #profile_photo {
             max-width: 150px;
             border-radius: 5px;
@@ -85,21 +86,18 @@
             const address = document.getElementById('address').value;
             const photoFile = document.getElementById('photo').files[0];
 
-            // Check if the username already exists
             if (localStorage.getItem(username)) {
                 document.getElementById('error-message').textContent = 'Username already exists. Please choose another username.';
                 return;
             } else {
-                document.getElementById('error-message').textContent = ''; // Clear any previous error messages
+                document.getElementById('error-message').textContent = '';
             }
 
-            // Validate photo size (1 MB limit)
             if (photoFile && photoFile.size > 1024 * 1024) {
                 document.getElementById('error-message').textContent = 'Photo size should be 1 MB or less.';
                 return;
             }
 
-            // Convert the photo to a base64 string if it exists
             const reader = new FileReader();
             reader.onloadend = function () {
                 const userData = {
@@ -110,11 +108,10 @@
                     dob,
                     phone,
                     address,
-                    photo: reader.result || '' // Base64 photo data or empty if no photo
+                    photo: reader.result || ''
                 };
                 localStorage.setItem(username, JSON.stringify(userData));
 
-                // Clear the registration form
                 document.getElementById('username').value = '';
                 document.getElementById('password').value = '';
                 document.getElementById('name').value = '';
@@ -128,11 +125,10 @@
                 showSection('login');
             };
 
-            // If a photo is uploaded, read it as a data URL
             if (photoFile) {
                 reader.readAsDataURL(photoFile);
             } else {
-                reader.onloadend(); // Call immediately if no photo
+                reader.onloadend();
             }
         }
 
@@ -188,13 +184,13 @@
         }
 
         window.onload = function() {
-            showSection('register');
+            showSection('login');
         }
     </script>
 </head>
 <body>
     <!-- Register Page -->
-    <div id="register" class="section active">
+    <div id="register" class="section">
         <button class="back-button" onclick="showSection('login')">Back</button>
         <h2>Register</h2>
         <form onsubmit="storeRegistrationDetails(); return false;">
@@ -226,12 +222,27 @@
 
             <input type="submit" value="Register">
         </form>
-        <br>
         <span id="error-message" class="error-message"></span>
-        <br>
-        <button onclick="showSection('forgot_password')">Forgot Password?</button>
-        <br><br>
         <p>Already have an account? <a href="#" onclick="showSection('login')">Log In</a></p>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login" class="section active">
+        <button class="back-button" onclick="showSection('register')">Back</button>
+        <h2>Log In</h2>
+        <form onsubmit="storeLoginDetails(); return false;">
+            <label for="username">Username:</label><br>
+            <input type="text" id="username_login" name="username" required><br><br>
+
+            <label for="password">Password:</label><br>
+            <input type="password" id="password_login" name="password" required>
+            <span id="toggle-password-login" class="toggle-password" onclick="togglePasswordVisibility('password_login', 'toggle-password-login')">👁️</span>
+            <br><br>
+
+            <
+
+input type="submit" value="Log In">
+        </form>
     </div>
 
     <!-- Profile Page -->
@@ -239,4 +250,13 @@
         <button class="back-button" onclick="showSection('login')">Back</button>
         <h2>Profile Details</h2>
         <p><strong>Username:</strong> <span id="profile_username"></span></p>
-        <p><strong>Full Name:</strong> <span id="profile_name"></span></p
+        <p><strong>Full Name:</strong> <span id="profile_name"></span></p>
+        <p><strong>Age:</strong> <span id="profile_age"></span></p>
+        <p><strong>Date of Birth:</strong> <span id="profile_dob"></span></p>
+        <p><strong>Phone Number:</strong> <span id="profile_phone"></span></p>
+        <p><strong>Address:</strong> <span id="profile_address"></span></p>
+        <img id="profile_photo" src="" alt="Profile Photo" style="display:none;">
+        <button class="logout-button" onclick="logout()">Logout</button>
+    </div>
+</body>
+</html>
